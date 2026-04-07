@@ -13,42 +13,76 @@ function updateConstituencies() {
 updateConstituencies();
 
 function generateBadge() {
-    const canvas = document.getElementById('badgeCanvas');
-    const ctx = canvas.getContext('2d');
-    const imgInput = document.getElementById('imageInput');
-    const template = new Image();
+    const video = document.getElementById('video');
+const imageInput = document.getElementById('imageInput');
+const canvas = document.getElementById('badgeCanvas');
+const ctx = canvas.getContext('2d');
+let capturedImage = null;
+
+// --- CAMERA LOGIC ---
+document.getElementById('startCamera').addEventListener('click', async () => {
+    document.getElementById('cameraArea').style.display = 'block';
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    video.srcObject = stream;
+});
+
+document.getElementById('captureBtn').addEventListener('click', () => {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = video.videoWidth;
+    tempCanvas.height = video.videoHeight;
+    tempCanvas.getContext('2d').drawImage(video, 0, 0);
+    capturedImage = tempCanvas.toDataURL('image/png');
     
-    template.src = 'template.png'; // Make sure this file exists in your folder!
+    // Stop camera
+    video.srcObject.getTracks().forEach(track => track.stop());
+    document.getElementById('cameraArea').style.display = 'none';
+    alert("Photo Captured!");
+});
+
+// --- GENERATE BADGE LOGIC ---
+function generateBadge() {
+    const template = new Image();
+    template.src = 'template.png'; // Ensure this filename matches your uploaded image exactly
 
     template.onload = function() {
+        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const userImg = new Image();
         
-        // 1. Draw User Photo first (to clip it in circle)
-        if (imgInput.files && imgInput.files[0]) {
+        // Check if user uploaded a file OR took a camera photo
+        if (imageInput.files && imageInput.files[0]) {
             const reader = new FileReader();
-            reader.onload = function(event) {
-                const userImg = new Image();
-                userImg.onload = function() {
-                    // Draw circular photo in center
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(300, 300, 120, 0, Math.PI * 2); // Adjust position/size
-                    ctx.clip();
-                    ctx.drawImage(userImg, 180, 180, 240, 240); // Adjust to fit circle
-                    ctx.restore();
-
-                    // 2. Draw Template on top (with transparent center)
-                    ctx.drawImage(template, 0, 0, 600, 600);
-
-                    // Show result
-                    const dataUrl = canvas.toDataURL('image/png');
-                    document.getElementById('finalBadge').src = dataUrl;
-                    document.getElementById('downloadBtn').href = dataUrl;
-                    document.getElementById('resultArea').style.display = 'block';
-                };
-                userImg.src = event.target.result;
+            reader.onload = function(e) {
+                userImg.src = e.target.result;
             };
-            reader.readAsDataURL(imgInput.files[0]);
+            reader.readAsDataURL(imageInput.files[0]);
+        } else if (capturedImage) {
+            userImg.src = capturedImage;
+        } else {
+            alert("Please upload or take a photo first!");
+            return;
         }
+
+        userImg.onload = function() {
+            // 1. Draw User Photo (Clipped into a circle)
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(300, 410, 160, 0, Math.PI * 2); // Positioned for the center hole
+            ctx.clip();
+            
+            // This centers the photo inside the circle
+            ctx.drawImage(userImg, 140, 250, 320, 320); 
+            ctx.restore();
+
+            // 2. Draw Template on top
+            ctx.drawImage(template, 0, 0, 600, 600);
+
+            // 3. Show the result
+            const finalImage = document.getElementById('finalBadge');
+            finalImage.src = canvas.toDataURL('image/png');
+            document.getElementById('downloadBtn').href = canvas.toDataURL('image/png');
+            document.getElementById('resultArea').style.display = 'block';
+        };
     };
 }
