@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pledge of 100% Voting - Kallakurichi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Pledge of 100% Voting</h1>
+        <p>"My Vote My Right"</p>
+
+        <div class="card">
+            <h3>User Registration</h3>
+            <div class="form-group">
+                <label>District</label>
+                <select id="district" onchange="updateConstituencies()">
+                    <option value="Kallakurichi">Kallakurichi</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Constituency</label>
+                <select id="constituency">
+                    </select>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="userName" placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+                <label>Photo</label>
+                <input type="file" id="imageInput" accept="image/*">
+            </div>
+
+            <button onclick="generateBadge()" class="btn-generate">Generate Badge</button>
+        </div>
+
+        <div id="resultArea" style="display:none;">
+            <canvas id="badgeCanvas" width="600" height="600" style="display:none;"></canvas>
+            <img id="finalBadge" src="" alt="Your Badge">
+            <br>
+            <a id="downloadBtn" class="btn-download" download="Kallakurichi_Voter_Badge.png">Download Badge</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

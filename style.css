@@ -1,0 +1,9 @@
+body { font-family: 'Arial', sans-serif; background-color: #f4f7f6; text-align: center; padding: 20px; }
+.container { max-width: 600px; margin: auto; }
+.card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.form-group { text-align: left; margin-bottom: 15px; }
+label { display: block; font-weight: bold; margin-bottom: 5px; }
+select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+.btn-generate { background: #00a859; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; }
+.btn-download { display: inline-block; background: #00a859; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+#finalBadge { max-width: 100%; border-radius: 50%; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
